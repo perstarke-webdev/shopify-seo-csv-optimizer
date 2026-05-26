@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shopify SEO CSV Optimizer"
+  short_description: "Optimize Shopify SEO fields safely"
+  default_prompt: "Use $shopify-seo-csv-optimizer to audit a Shopify product CSV and create a validated SEO-improved duplicate."
