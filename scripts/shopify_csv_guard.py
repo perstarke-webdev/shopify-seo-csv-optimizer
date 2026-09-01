@@ -44,17 +44,18 @@ CONTEXT_ONLY = {
 TITLE_SUFFIX = " | FamilySurprise"
 
 
-def sniff_dialect(path: Path) -> csv.Dialect:
-    with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        sample = handle.read(8192)
-    try:
-        return csv.Sniffer().sniff(sample)
-    except csv.Error:
-        return csv.excel
+def shopify_dialect() -> csv.Dialect:
+    """Return Shopify's standard CSV dialect without heuristic sniffing.
+
+    Shopify exports comma-separated CSV with doubled double quotes inside quoted
+    fields. ``csv.Sniffer`` can incorrectly infer ``doublequote=False`` from
+    quote-heavy product HTML, which makes valid rows appear structurally broken.
+    """
+    return csv.get_dialect("excel")
 
 
 def read_csv(path: Path) -> tuple[list[str], list[dict[str, str]], csv.Dialect]:
-    dialect = sniff_dialect(path)
+    dialect = shopify_dialect()
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle, dialect=dialect)
         headers = reader.fieldnames or []
